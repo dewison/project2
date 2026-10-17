@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlueMarket</title>
+    <style>
+        :root {
+            --primary-dark: #002b49;
+            --primary-blue: #0056b3;
+            --primary-light: #0088fe;
+            --bg-light: #eef5fc;
+            --white: #ffffff;
+            --text-color: #333333;
+            --accent-red: #e63946;
+            --accent-gold: #ffb703;
+            --border-color: #d1e3f8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f8fc;
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Шапка сайту */
+        header {
+            background-color: var(--primary-light);
+            color: var(--white);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--white);
+            text-decoration: none;
+        }
+
+        .search-bar {
+            flex: 1;
+            max-width: 450px;
+            display: flex;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 8px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            outline: none;
+        }
+
+        .header-user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 0.95rem;
+        }
+
+        .lang-switch {
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .cart-btn-header {
+            background-color: var(--primary-dark);
+            color: var(--white);
+            padding: 6px 14px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: background 0.2s;
+        }
+
+        .cart-btn-header:hover {
+            background-color: #001a2e;
+        }
+
+        .cart-count-badge {
+            background-color: var(--accent-red);
+            color: var(--white);
+            border-radius: 50%;
+            padding: 2px 7px;
+            font-size: 0.8rem;
+        }
+
+        .user-balance {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-weight: bold;
+        }
+
+        /* Головний контейнер */
+        .main-container {
+            display: flex;
+            flex: 1;
+            gap: 20px;
+            padding: 20px;
+            max-width: 1600px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Сайдбар */
+        aside {
+            width: 250px;
+            background-color: var(--primary-dark);
+            color: var(--white);
+            padding: 20px;
+            border-radius: 8px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        /* Кнопка "Всі товари" нагору сайдбару зліва */
+        .all-products-link-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: var(--primary-blue);
+            color: var(--white);
+            text-align: center;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+
+        .all-products-link-btn:hover {
+            background-color: var(--primary-light);
+        }
+
+        aside h3 {
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 5px;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+
+        .category-list {
+            list-style: none;
+        }
+
+        .category-list li {
+            margin-bottom: 10px;
+        }
+
+        .category-list a {
+            color: #d0e4ff;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .category-list a:hover {
+            color: var(--white);
+        }
+
+        .ad-widget {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        /* Контентна область */
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            min-width: 0;
+        }
+
+        .hero-banner {
+            background: linear-gradient(135deg, #0056b3, #0088fe);
+            color: var(--white);
+            border-radius: 12px;
+            padding: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .hero-banner h2 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .products-section {
+            position: relative;
+        }
+
+        .products-section h2 {
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+            border-left: 4px solid var(--primary-light);
+            padding-left: 10px;
+        }
+
+        .slider-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .slider-container {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            padding: 10px 5px;
+            scrollbar-width: none;
+        }
+
+        .slider-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .slider-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            background-color: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary-dark);
+            cursor: pointer;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .slider-btn:hover {
+            background-color: var(--primary-blue);
+            color: var(--white);
+        }
+
+        .slider-btn.prev { left: -15px; }
+        .slider-btn.next { right: -15px; }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .product-card {
+            background-color: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 15px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s, box-shadow 0.2s;
+            flex: 0 0 230px;
+            box-sizing: border-box;
+        }
+
+        .products-grid .product-card {
+            flex: unset;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 15px rgba(0, 86, 179, 0.15);
+        }
+
+        .discount-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: var(--accent-red);
+            color: var(--white);
+            font-size: 0.8rem;
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 5px;
+            z-index: 1;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 170px;
+            object-fit: cover;
+            margin-bottom: 12px;
+            border-radius: 6px;
+        }
+
+        .product-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .product-description {
+            font-size: 0.82rem;
+            color: #666;
+            margin-bottom: 10px;
+            line-height: 1.3;
+        }
+
+        .product-rating {
+            color: var(--accent-gold);
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+        }
+
+        .product-rating span {
+            color: #888;
+            font-size: 0.75rem;
+            margin-left: 5px;
+        }
+
+        .product-price-block {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            margin-bottom: 12px;
+            min-height: 28px;
+        }
+
+        .old-price {
+            text-decoration: line-through;
+            color: #888;
+            font-size: 0.85rem;
+        }
+
+        .new-price {
+            font-size: 1.15rem;
+            font-weight: bold;
+            color: var(--primary-blue);
+        }
+
+        .btn-add-to-cart {
+            width: 100%;
+            background-color: var(--primary-blue);
+            color: var(--white);
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-add-to-cart:hover {
+            background-color: var(--primary-dark);
+        }
+
+        /* МОДАЛЬНЕ ВІКНО КОШИКА */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 43, 73, 0.5);
+            backdrop-filter: blur(4px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .cart-modal {
+            background-color: var(--white);
+            width: 90%;
+            max-width: 1000px;
+            max-height: 85vh;
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0, 86, 179, 0.2);
+            display: flex;
+            overflow: hidden;
+            position: relative;
+            border: none;
+            animation: modalSlideUp 0.3s ease;
+        }
+
+        @keyframes modalSlideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .close-cart-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.4rem;
+            cursor: pointer;
+            font-weight: bold;
+            color: #888;
+            background: #f0f4f8;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            z-index: 10;
+        }
+
+        .close-cart-btn:hover {
+            background-color: var(--accent-red);
+            color: var(--white);
+        }
+
+        .cart-left-panel {
+            flex: 1.6;
+            padding: 25px;
+            overflow-y: auto;
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .cart-item-card {
+            background-color: #fafdfd;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+        }
+
+        .cart-item-img {
+            width: 75px;
+            height: 75px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--primary-dark);
+            margin-bottom: 4px;
+        }
+
+        .cart-item-sku {
+            font-size: 0.78rem;
+            color: #777;
+        }
+
+        .cart-item-qty {
+            display: flex;
+            align-items: center;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .qty-btn {
+            background: none;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 6px 12px;
+            color: var(--primary-blue);
+        }
+
+        .qty-input {
+            width: 32px;
+            text-align: center;
+            border: none;
+            outline: none;
+            font-weight: bold;
+            font-size: 0.9rem;
+            background: transparent;
+        }
+
+        .cart-item-price-block {
+            text-align: right;
+            min-width: 90px;
+        }
+
+        .cart-item-price {
+            font-weight: bold;
+            font-size: 1rem;
+            color: var(--primary-blue);
+        }
+
+        .remove-item-btn {
+            position: absolute;
+            top: 10px;
+            right: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            color: #aaa;
+        }
+
+        .remove-item-btn:hover {
+            color: var(--accent-red);
+        }
+
+        .cart-right-panel {
+            flex: 1;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background-color: #f8fbff;
+        }
+
+        .cart-summary-list {
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 15px;
+            min-height: 180px;
+            max-height: 320px;
+            overflow-y: auto;
+            font-size: 0.85rem;
+            background-color: var(--white);
+        }
+
+        .cart-summary-item {
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .checkout-block {
+            margin-top: 20px;
+            background: var(--white);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .total-price-text {
+            font-weight: 600;
+            font-size: 1.05rem;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .total-price-text span {
+            color: var(--primary-blue);
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+
+        .btn-checkout {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-blue);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-checkout:hover {
+            background-color: var(--primary-dark);
+        }
+
+        footer {
+            background-color: var(--primary-dark);
+            color: var(--white);
+            text-align: center;
+            padding: 15px;
+            margin-top: auto;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo">&lt;BlueMarket&gt;</a>
+        
+        <div class="search-bar">
+            <input type="text" placeholder="Пошук товарів...">
+        </div>
+
+        <div class="header-user-info">
+            <span class="lang-switch">UA | EN</span>
+            <div class="cart-btn-header" id="openCartBtn">
+                🛒 Кошик <span class="cart-count-badge" id="cartBadge">0</span>
+            </div>
+            <span>John</span>
+            <span class="user-balance">₴1250</span>
+        </div>
+    </header>
+
+    <div class="main-container">
+        
+        <aside>
+            <!-- Кнопка "Всі товари" над категоріями зліва -->
+            <a href="all-products.html" class="all-products-link-btn">Всі товари</a>
+
+            <div>
+                <h3>Категорії</h3>
+                <ul class="category-list">
+                    <li><a href="#">Гаджети та електроніка</a></li>
+                    <li><a href="#">Чоловічий одяг</a></li>
+                    <li><a href="#">Жіночий одяг</a></li>
+                    <li><a href="#">Взуття та аксесуари</a></li>
+                    <li><a href="#">Знижки та розпродажі</a></li>
+                </ul>
+            </div>
+            <div class="ad-widget">
+                <strong>SHOP SALES ADS</strong>
+                <p style="margin-top:5px;">Кешбек до 10% за кожну покупку цього місяця!</p>
+            </div>
+        </aside>
+
+        <main class="content">
+            <section class="hero-banner">
+                <div>
+                    <h2>SHOP SALES — New Year 2027</h2>
+                    <p>Великий розпродаж електронних гаджетів та стильного одягу!</p>
+                </div>
+            </section>
+
+            <!-- Секція 1: Акційні пропозиції (Слайдер зі знижками) -->
+            <section class="products-section">
+                <h2>Акційні пропозиції (Sales)</h2>
+                <div class="slider-wrapper">
+                    <button class="slider-btn prev" onclick="scrollSlider('salesSlider', -300)">&lt;</button>
+                    <div class="slider-container" id="salesSlider">
+                        
+                        <div class="product-card" data-id="1" data-sku="ART-001" data-price="1500">
+                            <span class="discount-badge">-25%</span>
+                            <img src="https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=400&auto=format&fit=crop&q=60" alt="Смарт-годинник" class="product-image">
+                            <div class="product-title" title="Смарт-годинник Ultra Fit Pro Max">Смарт-годинник Ultra Fit Pro Max</div>
+                            <div class="product-description"><strong>Характеристики:</strong> AMOLED 1.4", GPS, IP68.<br><strong>Матеріал:</strong> Алюміній, силікон.</div>
+                            <div class="product-rating">★★★★★ <span>(4.9)</span></div>
+                            <div class="product-price-block"><span class="old-price">₴2 000</span><span class="new-price">₴1 500</span></div>
+                            <button class="btn-add-to-cart">У кошик</button>
+                        </div>
+
+                        <div class="product-card" data-id="2" data-sku="ART-002" data-price="1190">
+                            <span class="discount-badge">-15%</span>
+                            <img src="https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=400&auto=format&fit=crop&q=60" alt="Худі" class="product-image">
+                            <div class="product-title" title="Зимове худі Oversize Heavy Cotton">Зимове худі Oversize Heavy Cotton</div>
+                            <div class="product-description"><strong>Характеристики:</strong> Вільний крій, капюшон.<br><strong>Матеріал:</strong> 100% бавовна (фліс).</div>
+                            <div class="product-rating">★★★★☆ <span>(4.5)</span></div>
+                            <div class="product-price-block"><span class="old-price">₴1 400</span><span class="new-price">₴1 190</span></div>
+                            <button class="btn-add-to-cart">У кошик</button>
+                        </div>
+
+                        <div class="product-card" data-id="3" data-sku="ART-003" data-price="2450">
+                            <span class="discount-badge">-30%</span>
+                            <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&auto=format&fit=crop&q=60" alt="Навушники" class="product-image">
+                            <div class="product-title" title="Бездротові навушники Noise Cancelling">Бездротові навушники Noise Cancelling</div>
+                            <div class="product-description"><strong>Характеристики:</strong> ANC, 30 год роботи.<br><strong>Матеріал:</strong> Пластик, екошкіра.</div>
+                            <div class="product-rating">★★★★★ <span>(5.0)</span></div>
+                            <div class="product-price-block"><span class="old-price">₴3 500</span><span class="new-price">₴2 450</span></div>
+                            <button class="btn-add-to-cart">У кошик</button>
+                        </div>
+
+                        <div class="product-card" data-id="4" data-sku="ART-004" data-price="640">
+                            <span class="discount-badge">-20%</span>
+                            <img src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=400&auto=format&fit=crop&q=60" alt="Футболка" class="product-image">
+                            <div class="product-title" title="Спортивна футболка Dry-Fit Running">Спортивна футболка Dry-Fit Running</div>
+                            <div class="product-description"><strong>Характеристики:</strong> Влаговідвідна.<br><strong>Матеріал:</strong> Поліестер, еластан.</div>
+                            <div class="product-rating">★★★★☆ <span>(4.2)</span></div>
+                            <div class="product-price-block"><span class="old-price">₴800</span><span class="new-price">₴640</span></div>
+                            <button class="btn-add-to-cart">У кошик</button>
+                        </div>
+
+                        <div class="product-card" data-id="5" data-sku="ART-005" data-price="1620">
+                            <span class="discount-badge">-10%</span>
+                            <img src="https://images.unsplash.com/photo-1608256246200-53e635b5b65f?w=400&auto=format&fit=crop&q=60" alt="Павербанк" class="product-image">
+                            <div class="product-title" title="Павербанк Fast Charge 20000mAh">Павербанк Fast Charge 20000mAh</div>
+                            <div class="product-description"><strong>Характеристики:</strong> Quick Charge 65W.<br><strong>Матеріал:</strong> Алюміній.</div>
+                            <div class="product-rating">★★★★★ <span>(4.8)</span></div>
+                            <div class="product-price-block"><span class="old-price">₴1 800</span><span class="new-price">₴1 620</span></div>
+                            <button class="btn-add-to-cart">У кошик</button>
+                        </div>
+
+                        <div class="product-card" data-id="6" data-sku="ART-006" data-price="2378">
+                            <span class="discount-badge">-18%</span>
+                            <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&auto=format&fit=crop&q=60" alt="Кросівки" class="product-image">
+                            <div class="product-title" title="Кросівки Urban Speed Runner">Кросівки Urban Speed Runner</div>
+                            <div class="product-description"><strong>Характеристики:</strong> Амортизація.<br><strong>Матеріал:</strong> Текстиль, гума.</div>
+                            <div class="product-rating">★★★★☆ <span>(4.6)</span></div>
+                            <div class="product-price-block"><span class="old-price">₴2 900</span><span class="new-price">₴2 378</span></div>
+                            <button class="btn-add-to-cart">У кошик</button>
+                        </div>
+
+                    </div>
+                    <button class="slider-btn next" onclick="scrollSlider('salesSlider', 300)">&gt;</button>
+                </div>
+            </section>
+
+            <!-- Секція 2: Нові надходження -->
+            <section class="products-section">
+                <h2>Нові надходження (New Products)</h2>
+                <div class="slider-wrapper">
+                    <button class="slider-btn prev" onclick="scrollSlider('newSlider', -300)">&lt;</button>
+                    <div class="slider-container" id="newSlider">
+                        
+                        <div class="product-card" data-id="7" data-sku="ART-007" data-price="1500">
+                            <img src="https://images.unsplash.com/photo-1598331668826-20cecc596b86?w=400&auto=format&fit=crop&q=60" alt="Смарт-колонка" class="product-image">
+                            <div class="product-title" title="Bluetooth колонка SoundBass 360 Mini">Bluetooth колонка SoundBass 360 Mini</div>
+                            <div class="product-description"><strong>Характеристики:</strong> 20W, IPX7.<br><strong>Матеріал:</strong> Пластик, тканина.</div>
+                            <div class="product-rating">★★★★★ <span>(4.9)</span></div>
+                            <div class="product-price-block"><span class="new-price">₴1 500</span></div>
+                            <button class="btn-add-to-cart">У кошик</button>
+                        </div>
+
+                        <div class="product-card" data-id="8" data-sku="ART-008" data-price="3200">
+                            <img src="https://images.unsplash.com/photo-1576995853123-5a10305d93c0?w=400&auto=format&fit=crop&q=60" alt="Куртка" class="product-image">
+                            <div class="product-title" title="Куртка Outdoor Waterproof Jacket">Куртка Outdoor Waterproof Jacket</div>
+                            <div class="product-description"><strong>Характеристики:</strong> Мембрана 10000мм.<br><strong>Матеріал:</strong> Нейлон.</div>
+                            <div class="product-rating">★★★★☆ <span>(4.4)</span></div>
+                            <div class="product-price-block"><span class="new-price">₴3 200</span></div>
+                            <button class="btn-add-to-cart">У кошик</button>
+                        </div>
+
+                        <div class="product-card" data-id="9" data-sku="ART-009" data-price="1250">
+                            <img src="https://images.unsplash.com/photo-1628413993904-94ecb60f1239?w=400&auto=format&fit=crop&q=60" alt="Ігрова миша" class="product-image">
+                            <div class="product-title" title="Бездротова ігрова миша CyberMouse Pro">Бездротова ігрова миша CyberMouse Pro</div>
+                            <div class="product-description"><strong>Характеристики:</strong> 16000 DPI, RGB.<br><strong>Матеріал:</strong> Матовий пластик.</div>
+                            <div class="product-rating">★★★★★ <span>(4.9)</span></div>
+                            <div class="product-price-block"><span class="new-price">₴1 250</span></div>
+                            <button class="btn-add-to-cart">У кошик</button>
+                        </div>
+
+                        <div class="product-card" data-id="10" data-sku="ART-010" data-price="2100">
+                            <img src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&auto=format&fit=crop&q=60" alt="Рюкзак" class="product-image">
+                            <div class="product-title" title="Міський рюкзак Urban Tech Pack">Міський рюкзак Urban Tech Pack</div>
+                            <div class="product-description"><strong>Характеристики:</strong> Відділ для ноутбука 15.6".<br><strong>Матеріал:</strong> Оксфорд.</div>
+                            <div class="product-rating">★★★★☆ <span>(4.7)</span></div>
+                            <div class="product-price-block"><span class="new-price">₴2 100</span></div>
+                            <button class="btn-add-to-cart">У кошик</button>
+                        </div>
+
+                        <div class="product-card" data-id="11" data-sku="ART-011" data-price="2800">
+                            <img src="https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&auto=format&fit=crop&q=60" alt="Клавіатура" class="product-image">
+                            <div class="product-title" title="Механічна клавіатура RGB Mechanical">Механічна клавіатура RGB Mechanical</div>
+                            <div class="product-description"><strong>Характеристики:</strong> Red Switches, RGB.<br><strong>Матеріал:</strong> Алюміній, ABS.</div>
+                            <div class="product-rating">★★★★★ <span>(5.0)</span></div>
+                            <div class="product-price-block"><span class="new-price">₴2 800</span></div>
+                            <button class="btn-add-to-cart">У кошик</button>
+                        </div>
+
+                    </div>
+                    <button class="slider-btn next" onclick="scrollSlider('newSlider', 300)">&gt;</button>
+                </div>
+            </section>
+
+            <!-- Секція 3: Каталог товарів (Сітка) -->
+            <section class="products-section">
+                <h2>Каталог товарів</h2>
+                <div class="products-grid">
+                    
+                    <div class="product-card" data-id="12" data-sku="ART-012" data-price="1850">
+                        <img src="https://images.unsplash.com/photo-1511556532299-8f662fc26c06?w=400&auto=format&fit=crop&q=60" alt="Окуляри" class="product-image">
+                        <div class="product-title" title="Сонцезахисні окуляри Polarized Classic">Сонцезахисні окуляри Polarized Classic</div>
+                        <div class="product-description"><strong>Характеристики:</strong> Захист UV400.<br><strong>Матеріал:</strong> Ацетат, метал.</div>
+                        <div class="product-rating">★★★★☆ <span>(4.6)</span></div>
+                        <div class="product-price-block"><span class="new-price">₴1 850</span></div>
+                        <button class="btn-add-to-cart">У кошик</button>
+                    </div>
+
+                    <div class="product-card" data-id="13" data-sku="ART-013" data-price="890">
+                        <img src="https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=400&auto=format&fit=crop&q=60" alt="Кепка" class="product-image">
+                        <div class="product-title" title="Спортивна бейсболка Blue Street Cap">Спортивна бейсболка Blue Street Cap</div>
+                        <div class="product-description"><strong>Характеристики:</strong> Регульований розмір.<br><strong>Матеріал:</strong> 100% бавовна.</div>
+                        <div class="product-rating">★★★★☆ <span>(4.3)</span></div>
+                        <div class="product-price-block"><span class="new-price">₴890</span></div>
+                        <button class="btn-add-to-cart">У кошик</button>
+                    </div>
+
+                    <div class="product-card" data-id="14" data-sku="ART-014" data-price="3800">
+                        <img src="https://images.unsplash.com/photo-1544816155-12df9643f363?w=400&auto=format&fit=crop&q=60" alt="Сумка" class="product-image">
+                        <div class="product-title" title="Шкіряна сумка через плече Leather Bag">Шкіряна сумка через плече Leather Bag</div>
+                        <div class="product-description"><strong>Характеристики:</strong> Натуральна шкіра.<br><strong>Матеріал:</strong> 100% шкіра.</div>
+                        <div class="product-rating">★★★★★ <span>(4.9)</span></div>
+                        <div class="product-price-block"><span class="new-price">₴3 800</span></div>
+                        <button class="btn-add-to-cart">У кошик</button>
+                    </div>
+
+                    <div class="product-card" data-id="15" data-sku="ART-015" data-price="2900">
+                        <img src="https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?w=400&auto=format&fit=crop&q=60" alt="Черевики" class="product-image">
+                        <div class="product-title" title="Трекінгові черевики Outdoor Trail">Трекінгові черевики Outdoor Trail</div>
+                        <div class="product-description"><strong>Характеристики:</strong> Водонепроникні, Vibram.<br><strong>Матеріал:</strong> Замша, гума.</div>
+                        <div class="product-rating">★★★★★ <span>(4.8)</span></div>
+                        <div class="product-price-block"><span class="new-price">₴2 900</span></div>
+                        <button class="btn-add-to-cart">У кошик</button>
+                    </div>
+
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- МОДАЛЬНЕ ВІКНО КОШИКА -->
+    <div class="modal-overlay" id="cartModal">
+        <div class="cart-modal">
+            <span class="close-cart-btn" id="closeCartBtn">&times;</span>
+            <div class="cart-left-panel" id="cartLeftPanel"></div>
+            <div class="cart-right-panel">
+                <div>
+                    <div class="cart-summary-list" id="cartSummaryList">
+                        <p style="font-weight:bold; margin-bottom:10px; color: var(--primary-dark);">Список товарів:</p>
+                    </div>
+                </div>
+                <div class="checkout-block">
+                    <div class="total-price-text">Сума замовлення: <span id="totalCartPrice">0</span> грн</div>
+                    <button class="btn-checkout" onclick="alert('Дякуємо за замовлення!')">Оформити замовлення</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        &copy;2026 BlueMarket. Усі права захищено.
+    </footer>
+
+    <script>
+        function scrollSlider(sliderId, distance) {
+            const slider = document.getElementById(sliderId);
+            if (slider) slider.scrollBy({ left: distance, behavior: 'smooth' });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            let cart = JSON.parse(localStorage.getItem('bluemarket_cart')) || [];
+
+            const cartModal = document.getElementById('cartModal');
+            const openCartBtn = document.getElementById('openCartBtn');
+            const closeCartBtn = document.getElementById('closeCartBtn');
+            const cartLeftPanel = document.getElementById('cartLeftPanel');
+            const cartSummaryList = document.getElementById('cartSummaryList');
+            const totalCartPriceEl = document.getElementById('totalCartPrice');
+            const cartBadge = document.getElementById('cartBadge');
+
+            openCartBtn.addEventListener('click', () => cartModal.classList.add('active'));
+            closeCartBtn.addEventListener('click', () => cartModal.classList.remove('active'));
+            cartModal.addEventListener('click', (e) => { if (e.target === cartModal) cartModal.classList.remove('active'); });
+
+            function saveAndSyncCart() {
+                localStorage.setItem('bluemarket_cart', JSON.stringify(cart));
+                updateCartUI();
+            }
+
+            document.querySelectorAll('.btn-add-to-cart').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const card = e.target.closest('.product-card');
+                    const id = card.dataset.id;
+                    const sku = card.dataset.sku;
+                    const price = parseFloat(card.dataset.price);
+                    const title = card.querySelector('.product-title').innerText;
+                    const imgSrc = card.querySelector('.product-image').src;
+
+                    const existingItem = cart.find(item => item.id === id);
+                    if (existingItem) {
+                        existingItem.quantity += 1;
+                    } else {
+                        cart.push({ id, sku, title, price, imgSrc, quantity: 1 });
+                    }
+                    saveAndSyncCart();
+                });
+            });
+
+            window.updateCartUI = function() {
+                const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+                cartBadge.innerText = totalCount;
+
+                cartLeftPanel.innerHTML = '';
+                cartSummaryList.innerHTML = '<p style="font-weight:bold; margin-bottom:10px; color: var(--primary-dark);">Список товарів:</p>';
+
+                if (cart.length === 0) {
+                    cartLeftPanel.innerHTML = '<p style="text-align:center; padding:40px; color:#777;">Кошик порожній</p>';
+                    totalCartPriceEl.innerText = '0';
+                    return;
+                }
+
+                let totalPrice = 0;
+                cart.forEach(item => {
+                    const itemTotal = item.price * item.quantity;
+                    totalPrice += itemTotal;
+
+                    const cardEl = document.createElement('div');
+                    cardEl.className = 'cart-item-card';
+                    cardEl.innerHTML = `
+                        <span class="remove-item-btn" onclick="window.removeItem('${item.id}')">&times;</span>
+                        <img src="${item.imgSrc}" alt="${item.title}" class="cart-item-img">
+                        <div class="cart-item-info">
+                            <div class="cart-item-title">${item.title}</div>
+                            <div class="cart-item-sku">Артикул: ${item.sku}</div>
+                        </div>
+                        <div class="cart-item-qty">
+                            <button class="qty-btn" onclick="window.changeQuantity('${item.id}', -1)">-</button>
+                            <input type="text" class="qty-input" value="${item.quantity}" readonly>
+                            <button class="qty-btn" onclick="window.changeQuantity('${item.id}', 1)">+</button>
+                        </div>
+                        <div class="cart-item-price-block">
+                            <div class="cart-item-price">${itemTotal} грн</div>
+                        </div>
+                    `;
+                    cartLeftPanel.appendChild(cardEl);
+
+                    const summaryEl = document.createElement('div');
+                    summaryEl.className = 'cart-summary-item';
+                    summaryEl.innerHTML = `
+                        <div><strong>${item.title}</strong></div>
+                        <div style="color: #555; margin-top: 2px;">Кількість: ${item.quantity} шт. | Ціна: ${itemTotal} грн</div>
+                    `;
+                    cartSummaryList.appendChild(summaryEl);
+                });
+
+                totalCartPriceEl.innerText = totalPrice;
+            };
+
+            window.changeQuantity = function(id, delta) {
+                const item = cart.find(i => i.id === id);
+                if (item) {
+                    item.quantity += delta;
+                    if (item.quantity <= 0) {
+                        window.removeItem(id);
+                    } else {
+                        saveAndSyncCart();
+                    }
+                }
+            };
+
+            window.removeItem = function(id) {
+                cart = cart.filter(i => i.id !== id);
+                saveAndSyncCart();
+            };
+
+            window.addEventListener('storage', (e) => {
+                if (e.key === 'bluemarket_cart') {
+                    cart = JSON.parse(e.newValue) || [];
+                    updateCartUI();
+                }
+            });
+
+            updateCartUI();
+        });
+    </script>
+</body>
+</html>

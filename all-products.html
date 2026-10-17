@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Всі товари - BlueMarket</title>
+    <style>
+        :root {
+            --primary-dark: #002b49;
+            --primary-blue: #0056b3;
+            --primary-light: #0088fe;
+            --bg-light: #eef5fc;
+            --white: #ffffff;
+            --text-color: #333333;
+            --accent-red: #e63946;
+            --accent-gold: #ffb703;
+            --border-color: #d1e3f8;
+            --sidebar-blue: #003b6f;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f8fc;
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Шапка сайту */
+        header {
+            background-color: var(--primary-light);
+            color: var(--white);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--white);
+            text-decoration: none;
+        }
+
+        .search-bar {
+            flex: 1;
+            max-width: 450px;
+            display: flex;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 8px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            outline: none;
+        }
+
+        .header-user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 0.95rem;
+        }
+
+        .lang-switch {
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .cart-btn-header {
+            background-color: var(--primary-dark);
+            color: var(--white);
+            padding: 6px 14px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: background 0.2s;
+        }
+
+        .cart-btn-header:hover {
+            background-color: #001a2e;
+        }
+
+        .cart-count-badge {
+            background-color: var(--accent-red);
+            color: var(--white);
+            border-radius: 50%;
+            padding: 2px 7px;
+            font-size: 0.8rem;
+        }
+
+        .user-balance {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-weight: bold;
+        }
+
+        /* Головний контейнер */
+        .main-container {
+            display: flex;
+            flex: 1;
+            gap: 20px;
+            padding: 20px;
+            max-width: 1600px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Синій сайдбар з висувним списком категорій */
+        aside.filter-sidebar {
+            width: 260px;
+            background-color: var(--sidebar-blue);
+            color: var(--white);
+            padding: 20px;
+            border-radius: 8px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .filter-sidebar h4 {
+            font-size: 1rem;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .category-tree {
+            list-style: none;
+        }
+
+        .category-item {
+            margin-bottom: 8px;
+        }
+
+        .category-toggle {
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 8px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        .category-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .arrow {
+            transition: transform 0.3s ease;
+            font-size: 0.8rem;
+        }
+
+        /* Висувний список підкатегорій */
+        .subcategory-list {
+            list-style: none;
+            padding-left: 15px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+        }
+
+        .category-item.active .subcategory-list {
+            max-height: 200px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+
+        .category-item.active .arrow {
+            transform: rotate(180deg);
+        }
+
+        .subcategory-list li {
+            margin-bottom: 4px;
+            font-size: 0.9rem;
+            color: #d0e4ff;
+            cursor: pointer;
+            padding: 3px 6px;
+            border-radius: 3px;
+            transition: color 0.2s, background 0.2s;
+        }
+
+        .subcategory-list li:hover {
+            color: var(--white);
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Стилі для слайдерів ціни */
+        .price-slider-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .price-range-inputs {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .price-slider-group input[type="range"] {
+            width: 100%;
+            accent-color: var(--primary-light);
+            cursor: pointer;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 0.9rem;
+        }
+
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        /* Контентна область */
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            min-width: 0;
+        }
+
+        .top-filter-bar {
+            background-color: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .selected-filters {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            font-size: 0.85rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-tag {
+            background-color: #e2effc;
+            color: var(--primary-blue);
+            border: 1px solid var(--border-color);
+            padding: 4px 10px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+        }
+
+        .filter-tag span.remove-tag {
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: var(--accent-red);
+            font-weight: bold;
+        }
+
+        .filter-tag span.remove-tag:hover {
+            color: #b02a37;
+        }
+
+        .sort-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: auto;
+        }
+
+        .sort-controls select {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            outline: none;
+            cursor: pointer;
+        }
+
+        /* Сітка товарів */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            gap: 20px;
+        }
+
+        .product-card {
+            background-color: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 15px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 15px rgba(0, 86, 179, 0.15);
+        }
+
+        .discount-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: var(--accent-red);
+            color: var(--white);
+            font-size: 0.8rem;
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 5px;
+            z-index: 1;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 170px;
+            object-fit: cover;
+            margin-bottom: 12px;
+            border-radius: 6px;
+        }
+
+        .product-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .product-rating {
+            color: var(--accent-gold);
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .comment-count {
+            color: #666;
+            font-size: 0.75rem;
+        }
+
+        .product-price-block {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            margin-bottom: 12px;
+            min-height: 28px;
+        }
+
+        .old-price {
+            text-decoration: line-through;
+            color: #888;
+            font-size: 0.85rem;
+        }
+
+        .new-price {
+            font-size: 1.15rem;
+            font-weight: bold;
+            color: var(--primary-blue);
+        }
+
+        .btn-add-to-cart {
+            width: 100%;
+            background-color: var(--primary-blue);
+            color: var(--white);
+            border: none;
+            padding: 9px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-add-to-cart:hover {
+            background-color: var(--primary-dark);
+        }
+
+        /* МОДАЛЬНЕ ВІКНО КОШИКА */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 43, 73, 0.5);
+            backdrop-filter: blur(4px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .cart-modal {
+            background-color: var(--white);
+            width: 90%;
+            max-width: 1000px;
+            max-height: 85vh;
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0, 86, 179, 0.2);
+            display: flex;
+            overflow: hidden;
+            position: relative;
+            border: none;
+            animation: modalSlideUp 0.3s ease;
+        }
+
+        @keyframes modalSlideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .close-cart-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.4rem;
+            cursor: pointer;
+            font-weight: bold;
+            color: #888;
+            background: #f0f4f8;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            z-index: 10;
+        }
+
+        .close-cart-btn:hover {
+            background-color: var(--accent-red);
+            color: var(--white);
+        }
+
+        .cart-left-panel {
+            flex: 1.6;
+            padding: 25px;
+            overflow-y: auto;
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .cart-item-card {
+            background-color: #fafdfd;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+        }
+
+        .cart-item-img {
+            width: 75px;
+            height: 75px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--primary-dark);
+            margin-bottom: 4px;
+        }
+
+        .cart-item-sku {
+            font-size: 0.78rem;
+            color: #777;
+        }
+
+        .cart-item-qty {
+            display: flex;
+            align-items: center;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .qty-btn {
+            background: none;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 6px 12px;
+            color: var(--primary-blue);
+        }
+
+        .qty-input {
+            width: 32px;
+            text-align: center;
+            border: none;
+            outline: none;
+            font-weight: bold;
+            font-size: 0.9rem;
+            background: transparent;
+        }
+
+        .cart-item-price-block {
+            text-align: right;
+            min-width: 90px;
+        }
+
+        .cart-item-price {
+            font-weight: bold;
+            font-size: 1rem;
+            color: var(--primary-blue);
+        }
+
+        .remove-item-btn {
+            position: absolute;
+            top: 10px;
+            right: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            color: #aaa;
+        }
+
+        .remove-item-btn:hover {
+            color: var(--accent-red);
+        }
+
+        .cart-right-panel {
+            flex: 1;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background-color: #f8fbff;
+        }
+
+        .cart-summary-list {
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 15px;
+            min-height: 180px;
+            max-height: 320px;
+            overflow-y: auto;
+            font-size: 0.85rem;
+            background-color: var(--white);
+        }
+
+        .cart-summary-item {
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .checkout-block {
+            margin-top: 20px;
+            background: var(--white);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .total-price-text {
+            font-weight: 600;
+            font-size: 1.05rem;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .total-price-text span {
+            color: var(--primary-blue);
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+
+        .btn-checkout {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-blue);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-checkout:hover {
+            background-color: var(--primary-dark);
+        }
+
+        footer {
+            background-color: var(--primary-dark);
+            color: var(--white);
+            text-align: center;
+            padding: 15px;
+            margin-top: auto;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo">&lt;BlueMarket&gt;</a>
+        
+        <div class="search-bar">
+            <input type="text" placeholder="Пошук товарів...">
+        </div>
+
+        <div class="header-user-info">
+            <span class="lang-switch">UA | EN</span>
+            <div class="cart-btn-header" id="openCartBtn">
+                🛒 Кошик <span class="cart-count-badge" id="cartBadge">0</span>
+            </div>
+            <span>John</span>
+            <span class="user-balance">₴1250</span>
+        </div>
+    </header>
+
+    <div class="main-container">
+        
+        <!-- Синій сайдбар із висувними категоріями та слайдерами ціни -->
+        <aside class="filter-sidebar">
+            <div>
+                <h4>Категорії</h4>
+                <ul class="category-tree">
+                    
+                    <li class="category-item">
+                        <div class="category-toggle">
+                            <span>Техніка та гаджети</span>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <ul class="subcategory-list">
+                            <li>Смартфони</li>
+                            <li>Планшети та ноутбуки</li>
+                            <li>Навушники та аудіо</li>
+                        </ul>
+                    </li>
+
+                    <li class="category-item">
+                        <div class="category-toggle">
+                            <span>Одяг та взуття</span>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <ul class="subcategory-list">
+                            <li>Чоловічий одяг</li>
+                            <li>Жіночий одяг</li>
+                            <li>Взуття</li>
+                        </ul>
+                    </li>
+
+                    <li class="category-item">
+                        <div class="category-toggle">
+                            <span>Спорт та відпочинок</span>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <ul class="subcategory-list">
+                            <li>Фітнес та аксесуари</li>
+                            <li>Трекінговий одяг</li>
+                            <li>Туризм</li>
+                        </ul>
+                    </li>
+
+                    <li class="category-item">
+                        <div class="category-toggle">
+                            <span>Дім та затишок</span>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <ul class="subcategory-list">
+                            <li>Рюкзаки та сумки</li>
+                            <li>Освітлення</li>
+                            <li>Аксесуари</li>
+                        </ul>
+                    </li>
+
+                </ul>
+            </div>
+
+            <hr style="border-color: rgba(255,255,255,0.3);">
+
+            <!-- Фільтр ціни у вигляді слайдерів -->
+            <div>
+                <h4>Ціна (грн)</h4>
+                <div class="price-slider-group">
+                    <div>
+                        <label style="font-size: 0.85rem;">Мін: <span id="minPriceVal">1000</span> грн</label>
+                        <input type="range" id="minPriceSlider" min="1000" max="20000" step="100" value="1000">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.85rem;">Макс: <span id="maxPriceVal">20000</span> грн</label>
+                        <input type="range" id="maxPriceSlider" min="1000" max="20000" step="100" value="20000">
+                    </div>
+                </div>
+            </div>
+
+            <hr style="border-color: rgba(255,255,255,0.3);">
+
+            <div>
+                <h4>Країна-виробник</h4>
+                <div class="checkbox-group" id="countryFilters">
+                    <label><input type="checkbox" value="Китай" checked> Китай</label>
+                    <label><input type="checkbox" value="США"> США</label>
+                    <label><input type="checkbox" value="Франція"> Франція</label>
+                    <label><input type="checkbox" value="Німеччина"> Німеччина</label>
+                    <label><input type="checkbox" value="Україна"> Україна</label>
+                    <label><input type="checkbox" value="Польща"> Польща</label>
+                    <label><input type="checkbox" value="Угорщина"> Угорщина</label>
+                </div>
+            </div>
+        </aside>
+
+        <main class="content">
+            
+            <div class="top-filter-bar">
+                <div class="selected-filters" id="selectedFiltersContainer">
+                    <span>Обрані фільтри:</span>
+                    <!-- Динамічні теги фільтрів -->
+                </div>
+
+                <div class="sort-controls">
+                    <span>Сортувати товари:</span>
+                    <select>
+                        <option>За релевантністю</option>
+                        <option>Від дешевих до дорогих</option>
+                        <option>Від дорогих до дешевих</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Сітка товарів -->
+            <div class="products-grid">
+                
+                <div class="product-card" data-id="201" data-sku="SKU-201" data-price="12200">
+                    <span class="discount-badge">-15%</span>
+                    <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&auto=format&fit=crop&q=60" alt="Смартфон" class="product-image">
+                    <div class="product-title" title="Смартфон Ultra Pro 5G">Смартфон Ultra Pro 5G</div>
+                    <div class="product-rating">
+                        <span>★★★★★</span>
+                        <span class="comment-count">💬 300 відгуків</span>
+                    </div>
+                    <div class="product-price-block">
+                        <span class="old-price">₴14 350</span>
+                        <span class="new-price">₴12 200</span>
+                    </div>
+                    <button class="btn-add-to-cart">У кошик</button>
+                </div>
+
+                <div class="product-card" data-id="202" data-sku="SKU-202" data-price="4500">
+                    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&auto=format&fit=crop&q=60" alt="Навушники" class="product-image">
+                    <div class="product-title" title="Бездротові навушники BassPro">Бездротові навушники BassPro</div>
+                    <div class="product-rating">
+                        <span>★★★★☆</span>
+                        <span class="comment-count">💬 145 відгуків</span>
+                    </div>
+                    <div class="product-price-block">
+                        <span class="new-price">₴4 500</span>
+                    </div>
+                    <button class="btn-add-to-cart">У кошик</button>
+                </div>
+
+                <div class="product-card" data-id="203" data-sku="SKU-203" data-price="8900">
+                    <span class="discount-badge">-20%</span>
+                    <img src="https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400&auto=format&fit=crop&q=60" alt="Планшет" class="product-image">
+                    <div class="product-title" title="Планшет MediaTab 10.4&quot;">Планшет MediaTab 10.4"</div>
+                    <div class="product-rating">
+                        <span>★★★★★</span>
+                        <span class="comment-count">💬 89 відгуків</span>
+                    </div>
+                    <div class="product-price-block">
+                        <span class="old-price">₴11 125</span>
+                        <span class="new-price">₴8 900</span>
+                    </div>
+                    <button class="btn-add-to-cart">У кошик</button>
+                </div>
+
+                <div class="product-card" data-id="204" data-sku="SKU-204" data-price="18900">
+                    <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&auto=format&fit=crop&q=60" alt="Ноутбук" class="product-image">
+                    <div class="product-title" title="Ноутбук OfficeBook 15">Ноутбук OfficeBook 15</div>
+                    <div class="product-rating">
+                        <span>★★★★☆</span>
+                        <span class="comment-count">💬 52 відгуки</span>
+                    </div>
+                    <div class="product-price-block">
+                        <span class="new-price">₴18 900</span>
+                    </div>
+                    <button class="btn-add-to-cart">У кошик</button>
+                </div>
+
+                <div class="product-card" data-id="205" data-sku="SKU-205" data-price="3100">
+                    <span class="discount-badge">-10%</span>
+                    <img src="https://images.unsplash.com/photo-1545454675-3531b543be5d?w=400&auto=format&fit=crop&q=60" alt="Колонка" class="product-image">
+                    <div class="product-title" title="Портативна колонка BoomBox">Портативна колонка BoomBox</div>
+                    <div class="product-rating">
+                        <span>★★★★★</span>
+                        <span class="comment-count">💬 210 відгуків</span>
+                    </div>
+                    <div class="product-price-block">
+                        <span class="old-price">₴3 450</span>
+                        <span class="new-price">₴3 100</span>
+                    </div>
+                    <button class="btn-add-to-cart">У кошик</button>
+                </div>
+
+                <div class="product-card" data-id="206" data-sku="SKU-206" data-price="1450">
+                    <img src="https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=400&auto=format&fit=crop&q=60" alt="Миша" class="product-image">
+                    <div class="product-title" title="Ігрова миша CyberRGB Pro">Ігрова миша CyberRGB Pro</div>
+                    <div class="product-rating">
+                        <span>★★★★☆</span>
+                        <span class="comment-count">💬 94 відгуки</span>
+                    </div>
+                    <div class="product-price-block">
+                        <span class="new-price">₴1 450</span>
+                    </div>
+                    <button class="btn-add-to-cart">У кошик</button>
+                </div>
+
+                <div class="product-card" data-id="207" data-sku="SKU-207" data-price="2700">
+                    <span class="discount-badge">-25%</span>
+                    <img src="https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&auto=format&fit=crop&q=60" alt="Клавіатура" class="product-image">
+                    <div class="product-title" title="Механічна клавіатура RGB">Механічна клавіатура RGB</div>
+                    <div class="product-rating">
+                        <span>★★★★★</span>
+                        <span class="comment-count">💬 412 відгуків</span>
+                    </div>
+                    <div class="product-price-block">
+                        <span class="old-price">₴3 600</span>
+                        <span class="new-price">₴2 700</span>
+                    </div>
+                    <button class="btn-add-to-cart">У кошик</button>
+                </div>
+
+                <div class="product-card" data-id="208" data-sku="SKU-208" data-price="6200">
+                    <img src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&auto=format&fit=crop&q=60" alt="Рюкзак" class="product-image">
+                    <div class="product-title" title="Міський рюкзак TravelSafe">Міський рюкзак TravelSafe</div>
+                    <div class="product-rating">
+                        <span>★★★☆☆</span>
+                        <span class="comment-count">💬 38 відгуків</span>
+                    </div>
+                    <div class="product-price-block">
+                        <span class="new-price">₴6 200</span>
+                    </div>
+                    <button class="btn-add-to-cart">У кошик</button>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- МОДАЛЬНЕ ВІКНО КОШИКА -->
+    <div class="modal-overlay" id="cartModal">
+        <div class="cart-modal">
+            <span class="close-cart-btn" id="closeCartBtn">&times;</span>
+            <div class="cart-left-panel" id="cartLeftPanel"></div>
+            <div class="cart-right-panel">
+                <div>
+                    <div class="cart-summary-list" id="cartSummaryList">
+                        <p style="font-weight:bold; margin-bottom:10px; color: var(--primary-dark);">Список товарів:</p>
+                    </div>
+                </div>
+                <div class="checkout-block">
+                    <div class="total-price-text">Сума замовлення: <span id="totalCartPrice">0</span> грн</div>
+                    <button class="btn-checkout" onclick="alert('Дякуємо за замовлення!')">Оформити замовлення</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        &copy;2026 BlueMarket. Усі права захищено.
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Висувні списки категорій
+            document.querySelectorAll('.category-toggle').forEach(toggle => {
+                toggle.addEventListener('click', () => {
+                    const parent = toggle.parentElement;
+                    parent.classList.toggle('active');
+                });
+            });
+
+            // Слайдери ціни
+            const minPriceSlider = document.getElementById('minPriceSlider');
+            const maxPriceSlider = document.getElementById('maxPriceSlider');
+            const minPriceVal = document.getElementById('minPriceVal');
+            const maxPriceVal = document.getElementById('maxPriceVal');
+
+            function updatePriceSliders() {
+                let minVal = parseInt(minPriceSlider.value);
+                let maxVal = parseInt(maxPriceSlider.value);
+
+                if (minVal > maxVal) {
+                    minPriceSlider.value = maxVal;
+                    minVal = maxVal;
+                }
+
+                minPriceVal.innerText = minVal;
+                maxPriceVal.innerText = maxVal;
+                updateSelectedFiltersUI();
+            }
+
+            minPriceSlider.addEventListener('input', updatePriceSliders);
+            maxPriceSlider.addEventListener('input', updatePriceSliders);
+
+            // Динамічні обрані фільтри (Країни + Ціна)
+            const countryCheckboxes = document.querySelectorAll('#countryFilters input[type="checkbox"]');
+            const selectedFiltersContainer = document.getElementById('selectedFiltersContainer');
+
+            function updateSelectedFiltersUI() {
+                selectedFiltersContainer.innerHTML = '<span>Обрані фільтри:</span>';
+                
+                let hasActive = false;
+
+                // Додаємо тег ціни
+                const minV = minPriceSlider.value;
+                const maxV = maxPriceSlider.value;
+                const priceTag = document.createElement('div');
+                priceTag.className = 'filter-tag';
+                priceTag.innerHTML = `Ціна: ${minV} - ${maxV} грн`;
+                selectedFiltersContainer.appendChild(priceTag);
+
+                // Додаємо країни
+                countryCheckboxes.forEach(cb => {
+                    if (cb.checked) {
+                        hasActive = true;
+                        const tag = document.createElement('div');
+                        tag.className = 'filter-tag';
+                        tag.innerHTML = `${cb.value} <span class="remove-tag" data-val="${cb.value}">&times;</span>`;
+                        selectedFiltersContainer.appendChild(tag);
+                    }
+                });
+            }
+
+            countryCheckboxes.forEach(cb => {
+                cb.addEventListener('change', updateSelectedFiltersUI);
+            });
+
+            selectedFiltersContainer.addEventListener('click', (e) => {
+                if (e.target.classList.contains('remove-tag')) {
+                    const valToUncheck = e.target.getAttribute('data-val');
+                    countryCheckboxes.forEach(cb => {
+                        if (cb.value === valToUncheck) {
+                            cb.checked = false;
+                            updateSelectedFiltersUI();
+                        }
+                    });
+                }
+            });
+
+            updateSelectedFiltersUI();
+
+
+            // Логіка синхронізованого кошика
+            let cart = JSON.parse(localStorage.getItem('bluemarket_cart')) || [];
+
+            const cartModal = document.getElementById('cartModal');
+            const openCartBtn = document.getElementById('openCartBtn');
+            const closeCartBtn = document.getElementById('closeCartBtn');
+            const cartLeftPanel = document.getElementById('cartLeftPanel');
+            const cartSummaryList = document.getElementById('cartSummaryList');
+            const totalCartPriceEl = document.getElementById('totalCartPrice');
+            const cartBadge = document.getElementById('cartBadge');
+
+            openCartBtn.addEventListener('click', () => cartModal.classList.add('active'));
+            closeCartBtn.addEventListener('click', () => cartModal.classList.remove('active'));
+            cartModal.addEventListener('click', (e) => { if (e.target === cartModal) cartModal.classList.remove('active'); });
+
+            function saveAndSyncCart() {
+                localStorage.setItem('bluemarket_cart', JSON.stringify(cart));
+                updateCartUI();
+            }
+
+            document.querySelectorAll('.btn-add-to-cart').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const card = e.target.closest('.product-card');
+                    const id = card.dataset.id;
+                    const sku = card.dataset.sku;
+                    const price = parseFloat(card.dataset.price);
+                    const title = card.querySelector('.product-title').innerText;
+                    const imgSrc = card.querySelector('.product-image').src;
+
+                    const existingItem = cart.find(item => item.id === id);
+                    if (existingItem) {
+                        existingItem.quantity += 1;
+                    } else {
+                        cart.push({ id, sku, title, price, imgSrc, quantity: 1 });
+                    }
+                    saveAndSyncCart();
+                });
+            });
+
+            window.updateCartUI = function() {
+                const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+                cartBadge.innerText = totalCount;
+
+                cartLeftPanel.innerHTML = '';
+                cartSummaryList.innerHTML = '<p style="font-weight:bold; margin-bottom:10px; color: var(--primary-dark);">Список товарів:</p>';
+
+                if (cart.length === 0) {
+                    cartLeftPanel.innerHTML = '<p style="text-align:center; padding:40px; color:#777;">Кошик порожній</p>';
+                    totalCartPriceEl.innerText = '0';
+                    return;
+                }
+
+                let totalPrice = 0;
+                cart.forEach(item => {
+                    const itemTotal = item.price * item.quantity;
+                    totalPrice += itemTotal;
+
+                    const cardEl = document.createElement('div');
+                    cardEl.className = 'cart-item-card';
+                    cardEl.innerHTML = `
+                        <span class="remove-item-btn" onclick="window.removeItem('${item.id}')">&times;</span>
+                        <img src="${item.imgSrc}" alt="${item.title}" class="cart-item-img">
+                        <div class="cart-item-info">
+                            <div class="cart-item-title">${item.title}</div>
+                            <div class="cart-item-sku">Артикул: ${item.sku}</div>
+                        </div>
+                        <div class="cart-item-qty">
+                            <button class="qty-btn" onclick="window.changeQuantity('${item.id}', -1)">-</button>
+                            <input type="text" class="qty-input" value="${item.quantity}" readonly>
+                            <button class="qty-btn" onclick="window.changeQuantity('${item.id}', 1)">+</button>
+                        </div>
+                        <div class="cart-item-price-block">
+                            <div class="cart-item-price">${itemTotal} грн</div>
+                        </div>
+                    `;
+                    cartLeftPanel.appendChild(cardEl);
+
+                    const summaryEl = document.createElement('div');
+                    summaryEl.className = 'cart-summary-item';
+                    summaryEl.innerHTML = `
+                        <div><strong>${item.title}</strong></div>
+                        <div style="color: #555; margin-top: 2px;">Кількість: ${item.quantity} шт. | Ціна: ${itemTotal} грн</div>
+                    `;
+                    cartSummaryList.appendChild(summaryEl);
+                });
+
+                totalCartPriceEl.innerText = totalPrice;
+            };
+
+            window.changeQuantity = function(id, delta) {
+                const item = cart.find(i => i.id === id);
+                if (item) {
+                    item.quantity += delta;
+                    if (item.quantity <= 0) {
+                        window.removeItem(id);
+                    } else {
+                        saveAndSyncCart();
+                    }
+                }
+            };
+
+            window.removeItem = function(id) {
+                cart = cart.filter(i => i.id !== id);
+                saveAndSyncCart();
+            };
+
+            window.addEventListener('storage', (e) => {
+                if (e.key === 'bluemarket_cart') {
+                    cart = JSON.parse(e.newValue) || [];
+                    updateCartUI();
+                }
+            });
+
+            updateCartUI();
+        });
+    </script>
+</body>
+</html>
